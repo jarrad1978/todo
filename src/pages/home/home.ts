@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {AlertController, NavController, reorderArray} from 'ionic-angular';
 import {TodoProvider} from "../../providers/todo/todo"
 
 @Component({
@@ -8,37 +8,45 @@ import {TodoProvider} from "../../providers/todo/todo"
 })
 export class HomePage {
   public todos = [];
-  public reorderIsEnabled = true;
-    
+  public reorderIsEnabled = false;
+
   constructor(public navCtrl: NavController, private alertController: AlertController, private todoProvider: TodoProvider) {
-      this.todos = this.todoProvider.getTodos();
+    this.todos = this.todoProvider.getTodos();
   }
-    
-    openTodoAlert(){
-        let addTodoAlert = this.alertController.create({
-           title: "Add A Todo",
-            message: "Enter Your Todo",
-            inputs: [
-                {
-                    type: "text",
-                    name: "addTodoInput"
-                }
-            ],
-            buttons: [
-                {
-                    text: "Cancel"
-                },
-                {
-                    text: "Add Todo",
-                    handler: (inputData)=> {
-                        let todoText;
-                        todoText = inputData.addTodoInput;
-                        this.todoProvider.addTodo(todoText);
-                    }
-                }
-            ]
-        });
-        addTodoAlert.present();
-    }
+
+  toggleReorder() {
+    this.reorderIsEnabled = !this.reorderIsEnabled;
+  }
+
+  itemReordered($event) {
+    reorderArray(this.todos, $event);
+  }
+
+  openTodoAlert() {
+    let addTodoAlert = this.alertController.create({
+      title: "Add A Todo",
+      message: "Enter Your Todo",
+      inputs: [
+        {
+          type: "text",
+          name: "addTodoInput"
+        }
+      ],
+      buttons: [
+        {
+          text: "Cancel"
+        },
+        {
+          text: "Add Todo",
+          handler: (inputData) => {
+            let todoText;
+            todoText = inputData.addTodoInput;
+            this.todoProvider.addTodo(todoText);
+          }
+        }
+      ]
+    });
+    addTodoAlert.present();
+  }
 
 }
